@@ -1,0 +1,112 @@
+Program 5
+Create an application to demonstrate few key features of the Android framework. In particular, the application demonstrates how to send SMS text messages. 
+a. How to send SMS text messages.
+b. How to dial using an in-built dialer
+c. How to send email.
+
+MainActivity.java
+package com.example.fifthprogram;
+public class MainActivity extends AppCompatActivity {
+    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
+    Button sendBtn;
+    Button btnSendEmail;
+    Button btnPhone;
+    String phoneNo;
+    String message;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        sendBtn = (Button) findViewById(R.id.btnSendSMS);
+        btnSendEmail = (Button) findViewById(R.id.btnSendEmail);
+        btnPhone = (Button) findViewById(R.id.btnDialPhone);
+        sendBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                sendSMSMessage();
+            }
+        });
+        btnSendEmail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendEmail();
+            }
+        });
+        btnPhone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PhoneDial();
+            }
+        });
+    }
+    protected void sendEmail() {
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        emailIntent.setData(Uri.parse("mailto:"));
+        emailIntent.setType("text/plain");
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{"ba.mohan@gmail.com"});
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "subject Test");
+        emailIntent.putExtra(Intent.EXTRA_TEXT, "Message Body Test");
+        startActivity(emailIntent);
+    }
+    protected void sendSMSMessage() {
+        Intent sendIntent = new Intent(Intent.ACTION_SENDTO);
+        sendIntent.putExtra("sms_body", "default content");
+        sendIntent.setType("vnd.android-dir/mms-sms");
+        sendIntent.setData(Uri.parse("sms:919999999999"));
+        startActivity(sendIntent);
+        Toast.makeText(getApplicationContext(), "SMS sent.",
+                Toast.LENGTH_LONG).show();
+    }
+    protected void PhoneDial() {
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        startActivity(intent);
+    }
+}
+
+activity_main.xml
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.fifthprogram.MainActivity">
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sending SMS Example"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:textSize="30dp" />
+
+    <Button
+        android:id="@+id/btnDialPhone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="75dp"
+        android:layout_marginLeft="20dp"
+        android:text="Phone" />
+
+    <Button
+        android:id="@+id/btnSendSMS"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="75dp"
+        android:text="Sms" />
+
+    <Button
+        android:id="@+id/btnSendEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="300dp"
+        android:layout_marginTop="75dp"
+        android:text="Email" />
+
+</RelativeLayout>
+
+AndroidManifest.xml
+<uses-permission android:name="android.permission.SEND_SMS"/>
